@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+
+        body{
+            background: url(desk.jpg) no-repeat center top fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+
+        }
+
+
+        #container{
+            width: 500px;
+            height: 500px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 150px;
+
+            margin: auto;
+            z-index: 2;
+        }
+
+        .disc{
+            width: 150px;
+            height: 155px;
+            position: absolute;
+            margin: auto;
+        }
+        .disc1{
+            left: -300px;
+            right: 0;
+            top: 430px;
+            z-index: 3;
+
+        }
+        .disc2{
+            left: 0;
+            right: 0;
+            top: 430px;
+            z-index: 3;
+        }
+        .disc3{
+            left: 300px;
+            right: 0;
+            top: 430px;
+            z-index: 3;
+            display: none;
+
+        }
+        .discinside{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+
+        }
+        .allscreen{
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+        }
+        .disclight{
+            width: 600px;
+            height: 600px;
+            position: absolute;
+            z-index: 1;
+            left: 0;
+            right: 0;
+            top: 70px;
+            margin: auto;
+            overflow: hidden;
+            display: none;
+            opacity: 0.5;
+        }
+        .color1{background-image: url("pip1.png");}
+        .color2{background-image: url("pip2.png");}
+        .color3{background-image: url("pip3.png");}
+        .color4{background-image: url("pip4.png");}
+        .color5{background-image: url("pip5.png");}
+        .color6{background-image: url("pip6.png");}
+
+        .lightimg{
+            width: 600px;
+            height: 600px;
+            animation-name: lightimg;
+            animation-duration: 9s;
+            animation-timing-function: linear;
+            animation-fill-mode: forwards;
+            animation-iteration-count:infinite ;
+
+            /* Safari and Chrome: */
+            -webkit-animation-name: lightimg;
+            -webkit-animation-duration: 9s;
+            -webkit-animation-timing-function: linear;
+            -webkit-animation-fill-mode: forwards;
+            -webkit-animation-iteration-count:infinite ;
+            opacity: 0.5;
+        }
+        @keyframes lightimg
+        {
+            0%   {
+                -ms-transform: rotate(0deg); /* IE 9 */
+                -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -ms-transform: rotate(360deg); /* IE 9 */
+                -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+                transform: rotate(360deg);
+            }
+
+        }
+        @-webkit-keyframes lightimg
+        {
+            0%   {
+                -ms-transform: rotate(0deg); /* IE 9 */
+                -webkit-transform: rotate(0deg); /* Chrome, Safari, Opera */
+                transform: rotate(0deg);
+            }
+
+            100% {
+                -ms-transform: rotate(360deg); /* IE 9 */
+                -webkit-transform: rotate(360deg); /* Chrome, Safari, Opera */
+                transform: rotate(360deg);
+            }
+
+        }
+
+
+    </style>
+
+</head>
+<body>
+
+<script src="./three.min.js"></script>
+<script src="./js/dat.gui.min.js"></script>
+<script src="./js/tween.min.js"></script>
+<script src="./js/OrbitControls.js"></script>
+<script src="./js/Detector.js"></script>
+<script src="src/minified/TweenMax.min.js"></script>
+<script src="src/minified/plugins/CSSPlugin.min.js"></script>
+<script src="src/minified/easing/EasePack.min.js"></script>
+<script src="src/minified/TweenLite.min.js"></script>
+<script src="src/jquery-1.11.0.min.js"></script>
+<!--主視覺--><div id="container"></div><!--//主視覺-->
+<script>
+
+    if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+    var renderer = new THREE.WebGLRenderer({ alpha: true });
+
+    var camera = new THREE.PerspectiveCamera( 45, 500 / 500, 1, 10000 );
+
+    var controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+    var scene = new THREE.Scene();
+
+    var matFloor = new THREE.MeshPhongMaterial();
+    var matBox = new THREE.MeshPhongMaterial( { color: 0x000000 } );
+
+    var geoFloor = new THREE.BoxGeometry( 2000, 1, 2000 );
+    var geoBox = new THREE.CylinderGeometry( 3, 4, 6,20 );
+
+    var mshFloor = new THREE.Mesh( geoFloor, matFloor );
+    var mshBox = new THREE.Mesh( geoBox, matBox );
+
+    var ambient = new THREE.AmbientLight( 0x111111 );
+
+    var spotLight1 = createSpotlight( 0xffffff );
+    var boxanimate={x:0,y:0,z:0}
+    var boxxyz={x:0,y:0,z:0}
+    var cc='stop'
+    var speed=0.3
+
+    var rangeX=1
+    var rangeY=0.3
+    var angle=0
+    var sis1
+    var sis2
+    var sis3
+    var sis4
+    var sis5
+    var sis6
+    var mesh1
+    var mesh2
+    var mesh3
+
+    var lightHelper1, lightHelper2, lightHelper3;
+
+    function init() {
+
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        renderer.gammaInput = true;
+        renderer.gammaOutput = true;
+
+        camera.position.set( 0, 30, 0 );
+
+        spotLight1.position.set( 15, 30, 20 );
+        spotLight1.angle=0.6
+
+        //lightHelper1 = new THREE.SpotLightHelper( spotLight1 );
+
+
+
+
+        mshBox.castShadow = true;
+        mshBox.receiveShadow = true;
+        mshBox.position.set( 0, 0, 0 );
+
+
+        var texture = new THREE.TextureLoader();
+        var map1=texture.load( './sis1.jpg' );
+        var map2=texture.load( './sis2.jpg' );
+        var map3=texture.load( './sis3.jpg' );
+        var map4=texture.load( './sis4.jpg' );
+        var map5=texture.load( './sis5.jpg' );
+        var map6=texture.load( './sis6.jpg' );
+        sis1=new THREE.MeshPhongMaterial({map:map1});
+        sis2=new THREE.MeshPhongMaterial({map:map2});
+        sis3=new THREE.MeshPhongMaterial({map:map3});
+        sis4=new THREE.MeshPhongMaterial({map:map4});
+        sis5=new THREE.MeshPhongMaterial({map:map5});
+        sis6=new THREE.MeshPhongMaterial({map:map6});
+        var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+        var material = [sis1,sis2,sis3,sis4,sis5,sis6];
+        mesh1=new THREE.Mesh(geometry,material);
+        mesh2=new THREE.Mesh(geometry,material);
+        mesh3=new THREE.Mesh(geometry,material);
+        mesh1.position.set( -1-Math.random()*1, 0, 0 );
+        mesh2.position.set( 0, 0, -1 );
+        mesh3.position.set( 1+Math.random()*1, 0, 0 );
+        mesh1.rotation.set(0,Math.random()*1,0)
+        mesh2.rotation.set(0,Math.random()*1,0)
+        mesh3.rotation.set(0,Math.random()*1,0)
+        scene.add( mesh1 );
+        scene.add( mesh2 );
+        scene.add( mesh3 );
+
+
+
+
+
+
+        scene.add( mshBox );
+        scene.add( ambient );
+        scene.add( spotLight1);
+        //scene.add( lightHelper1);
+
+        container.appendChild(renderer.domElement); //將畫布加入瀏覽器 DOM 中
+        onResize();
+
+
+        controls.target.set( 0, 0, 0 );
+        //controls.maxPolarAngle = Math.PI / 2;
+        controls.update();
+
+    }
+
+    function createSpotlight( color ) {
+
+        var newObj = new THREE.SpotLight( color, 2 );
+
+        newObj.castShadow = true;
+        newObj.angle = 1;
+        newObj.penumbra = 0.2;
+        newObj.decay = 2;
+        newObj.distance = 100;
+
+        newObj.shadow.mapSize.width = 1024;
+        newObj.shadow.mapSize.height = 1024;
+
+        return newObj;
+
+    }
+
+    function onResize() {
+
+        camera.aspect = 500 / 500;
+        camera.updateProjectionMatrix();
+        renderer.setClearColor(0xcccccc,0);  //設定背景色為白色
+        renderer.setSize( 500, 500 );
+
+    }
+
+
+    function animate() {
+
+        //tween( spotLight1,mshBox );
+
+
+        setTimeout( animate, 5000 );
+
+    }
+
+    function render() {
+
+        //TWEEN.update();
+
+
+        if(cc=='start'){
+
+            sin=Math.sin(angle)*rangeY
+            cos=Math.cos(angle)*rangeX
+            boxanimate.y=sin
+            boxanimate.z=cos
+            boxanimate.x=0
+            angle+=speed
+            mshBox.rotation.set(boxanimate.x,boxanimate.y,boxanimate.z)
+            mshBox.position.set(boxxyz.x,boxxyz.y,boxxyz.z)
+        }else if(cc=='pause'){
+            mshBox.rotation.set(boxanimate.x,boxanimate.y,boxanimate.z)
+            mshBox.position.set(boxxyz.x,boxxyz.y,boxxyz.z)
+        }else if(cc=='open'){
+            mshBox.rotation.set(boxanimate.x,boxanimate.y,boxanimate.z)
+            mshBox.position.set(boxxyz.x,boxxyz.y,boxxyz.z)
+        }
+
+
+        //if ( lightHelper1 ) lightHelper1.update();
+
+        renderer.render( scene, camera );
+
+        requestAnimationFrame( render );
+
+    }
+
+    function shark(){
+        angle=0
+        cc='start'
+
+
+        TweenLite.to(boxxyz,.1,{x:0,y:10,z:0})
+
+
+    }
+    function stop(){
+        TweenLite.to(boxanimate,.1,{x:0,y:0,z:0})
+        TweenLite.to(boxxyz,.1,{x:0,y:0,z:0})
+        cc='pause'
+
+    }
+    function opencard(){
+        TweenLite.to(boxanimate,.1,{x:-1,y:0,z:0})
+        TweenLite.to(boxxyz,.1,{x:0,y:0,z:-8})
+        cc='open'
+
+        var ss1=Math.floor(Math.random()*6+1)
+        var ss2=Math.floor(Math.random()*6+1)
+        var ss3=Math.floor(Math.random()*6+1)
+
+
+        var material1 = [sis1,sis2,eval('sis'+ss1),sis4,sis5,sis6];
+        var material2 = [sis1,sis2,eval('sis'+ss2),sis4,sis5,sis6];
+        var material3 = [sis1,sis2,eval('sis'+ss3),sis4,sis5,sis6];
+        mesh1.material=material1
+        mesh2.material=material2
+        mesh3.material=material3
+        mesh1.position.set( -1-Math.random()*1, 0, 0 );
+        mesh2.position.set( 0, 0, -1 );
+        mesh3.position.set( 1+Math.random()*1, 0, 0 );
+        mesh1.rotation.set(0,Math.random()*1,0)
+        mesh2.rotation.set(0,Math.random()*1,0)
+        mesh3.rotation.set(0,Math.random()*1,0)
+        $(".disclight").show()
+        goAnimate(ss1,ss2,ss3)
+    }
+
+    function goAnimate(ss1,ss2,ss3){
+        $(".disc1").find(".discinside").removeClass("color1")
+        $(".disc1").find(".discinside").removeClass("color2")
+        $(".disc1").find(".discinside").removeClass("color3")
+        $(".disc1").find(".discinside").removeClass("color4")
+        $(".disc1").find(".discinside").removeClass("color5")
+        $(".disc1").find(".discinside").removeClass("color6")
+        $(".disc2").find(".discinside").removeClass("color1")
+        $(".disc2").find(".discinside").removeClass("color2")
+        $(".disc2").find(".discinside").removeClass("color3")
+        $(".disc2").find(".discinside").removeClass("color4")
+        $(".disc2").find(".discinside").removeClass("color5")
+        $(".disc2").find(".discinside").removeClass("color6")
+        $(".disc3").find(".discinside").removeClass("color1")
+        $(".disc3").find(".discinside").removeClass("color2")
+        $(".disc3").find(".discinside").removeClass("color3")
+        $(".disc3").find(".discinside").removeClass("color4")
+        $(".disc3").find(".discinside").removeClass("color5")
+        $(".disc3").find(".discinside").removeClass("color6")
+        $(".disc1").find(".discinside").addClass('color'+ss1)
+        $(".disc2").find(".discinside").addClass('color'+ss2)
+        $(".disc3").find(".discinside").addClass('color'+ss3)
+        $(".disc1").css("left","100%")
+        $(".disc2").css("left","100%")
+        $(".disc3").css("left","100%")
+        $(".disc1").find(".discinside").css("left",0)
+        $(".disc2").find(".discinside").css("left",0)
+        $(".disc3").find(".discinside").css("left",0)
+        TweenLite.to($(".disc1"),.5,{left:-300,delay:.2, ease: "power3.in"})
+        TweenLite.to($(".disc2"),.5,{left:0,delay:.3, ease: "power3.in"})
+        TweenLite.to($(".disc3"),.5,{left:300,delay:.4, ease: "power3.in"})
+        var timeobj={num:0}
+        TweenLite.to(timeobj,2.5,{num:1,onComplete:finish})
+        TweenLite.to($(".disc1").find(".discinside"),3,{left:-90})
+        TweenLite.to($(".disc2").find(".discinside"),3,{left:-90})
+        TweenLite.to($(".disc3").find(".discinside"),3,{left:-90})
+
+
+    }
+
+    function finish(){
+        TweenLite.to($(".disc1"),.5,{left:-3000})
+        TweenLite.to($(".disc2"),.5,{left:-3000,delay:.1})
+        TweenLite.to($(".disc3"),.5,{left:-3000,delay:.2,onComplete:function(){
+                $(".disc1").css("left","100%")
+                $(".disc2").css("left","100%")
+                $(".disc3").css("left","100%")
+                $(".disc1").find(".discinside").css("left",0)
+                $(".disc2").find(".discinside").css("left",0)
+                $(".disc3").find(".discinside").css("left",0)
+            }})
+        $(".disclight").hide()
+        stop()
+    }
+
+
+    init();
+    render();
+    animate();
+
+</script>
+
+
+<button onclick="shark()">搖一搖</button>
+<button onclick="stop()">停止</button>
+<button onclick="opencard()">開獎</button>
+<div class="allscreen">
+
+    <div class="disc disc1"><div class="discinside"></div></div>
+    <div class="disc disc2"><div class="discinside"></div></div>
+    <div class="disc disc3"><div class="discinside"></div></div>
+    <div class="disclight"><img src="light3.png" class="lightimg" /> </div>
+</div>
+
+
+
+</body>
+</html>
