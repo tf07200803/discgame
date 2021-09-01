@@ -361,6 +361,9 @@
         cc='start'
 
 
+        $("#startbtn").hide()
+        $("#finishbtn").show()
+
         TweenLite.to(boxxyz,.1,{x:0,y:10,z:0})
 
 
@@ -369,6 +372,16 @@
         TweenLite.to(boxanimate,.1,{x:0,y:0,z:0})
         TweenLite.to(boxxyz,.1,{x:0,y:0,z:0})
         cc='pause'
+        setTimeout(function(){ opencard() }, 500);
+
+
+    }
+    function restart(){
+        TweenLite.to(boxanimate,.1,{x:0,y:0,z:0})
+        TweenLite.to(boxxyz,.1,{x:0,y:0,z:0})
+        cc='pause'
+
+
 
     }
     function opencard(){
@@ -449,7 +462,9 @@
                 $(".disc3").find(".discinside").css("left",0)
             }})
         $(".disclight").hide()
-        stop()
+        restart()
+        $("#startbtn").show()
+        $("#finishbtn").hide()
     }
 
 
@@ -460,9 +475,9 @@
 </script>
 
 <div class="controller">
-    <button onclick="shark()">搖一搖</button>
-    <button onclick="stop()">停止</button>
-    <button onclick="opencard()">開獎</button>
+    <button onclick="shark()" id="startbtn">遊戲開始</button>
+    <!--<button onclick="stop()">停止</button>-->
+    <button onclick="stop()" style="display:none;" id="finishbtn">開獎</button>
 </div>
 
 <div class="allscreen">
