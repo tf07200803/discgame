@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=600, target-densitydpi=device-dpi, maximum-scale=2.0, user-scalable=yes" />
+    <meta name="format-detection"content="telephone=no">
     <title>Title</title>
     <style>
 
@@ -21,7 +23,6 @@
             position: absolute;
             left: 0;
             right: 0;
-            top: 150px;
 
             margin: auto;
             z-index: 2;
@@ -66,6 +67,7 @@
             height: 600px;
             overflow: hidden;
             position: relative;
+            top: -150px;
         }
         .disclight{
             width: 600px;
@@ -74,11 +76,30 @@
             z-index: 1;
             left: 0;
             right: 0;
-            top: 70px;
+            top: -80px;
             margin: auto;
             overflow: hidden;
             display: none;
             opacity: 0.5;
+        }
+        .controller{
+            position: absolute;
+            z-index: 2;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            height: 50px;
+            margin: auto;
+            text-align: center;
+            width: 100%;
+            z-index: 10;
+        }
+        .controller button{
+            width: 30%;
+            height: 50px;
+            font-size: 22px;
+
         }
         .color1{background-image: url("pip1.png");}
         .color2{background-image: url("pip2.png");}
@@ -438,10 +459,12 @@
 
 </script>
 
+<div class="controller">
+    <button onclick="shark()">搖一搖</button>
+    <button onclick="stop()">停止</button>
+    <button onclick="opencard()">開獎</button>
+</div>
 
-<button onclick="shark()">搖一搖</button>
-<button onclick="stop()">停止</button>
-<button onclick="opencard()">開獎</button>
 <div class="allscreen">
 
     <div class="disc disc1"><div class="discinside"></div></div>
